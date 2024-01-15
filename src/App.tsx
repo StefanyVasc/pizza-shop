@@ -1,8 +1,14 @@
+import { Button } from './components/ui/button'
+import './global.css'
+
 export function App() {
 
   return (
     <>
-      <div>pizza shop</div>
+      <div className="flex justify-center items-center h-screen">
+        <Button>Teste shadcn/ui</Button>
+      </div>
+
     </>
   )
 }
