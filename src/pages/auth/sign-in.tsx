@@ -1,20 +1,17 @@
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import { signIn } from '@/api/sign-in'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 const signInForm = z.object({
-  email: z
-    .string()
-    .min(1, { message: 'O email está muito curto.' })
-    .email({ message: 'Preencha com um email válido' })
-    .refine((value) => value.length >= 1 && /\S+@\S+\.\S+/.test(value)),
+  email: z.string().email(),
 })
 
 type SignInForm = z.infer<typeof signInForm>
@@ -24,21 +21,26 @@ export function SignIn() {
     register,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<SignInForm>({
-    resolver: zodResolver(signInForm),
+  } = useForm<SignInForm>()
+
+  const { mutateAsync: authenticate } = useMutation({
+    mutationFn: signIn,
   })
 
   async function handleSignIn(data: SignInForm) {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      toast.success('Enviamos um link de autenticação para o seu email.', {
+      await authenticate({ email: data.email })
+
+      toast.success('Enviamos um link de autenticação para seu e-mail.', {
         action: {
           label: 'Reenviar',
-          onClick: () => handleSignIn(data),
+          onClick: () => {
+            handleSignIn(data)
+          },
         },
       })
     } catch (error) {
-      toast.error('Não foi possivel acessar o painel.')
+      toast.error('Credenciais inválidas.')
     }
   }
 
@@ -64,7 +66,7 @@ export function SignIn() {
           <form onSubmit={handleSubmit(handleSignIn)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Seu e-mail</Label>
-              <Input id="email" type="email" {...(register('email'), {})} />
+              <Input id="email" type="email" {...register('email')} />
             </div>
 
             <Button disabled={isSubmitting} type="submit" className="w-full">
