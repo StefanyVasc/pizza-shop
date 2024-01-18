@@ -1,9 +1,11 @@
+import { useMutation } from '@tanstack/react-query'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import { registerRestaurant } from '@/api/register-restaurant'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -23,18 +25,26 @@ export function SignUp() {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting },
   } = useForm<SignUpForm>()
+
+  const { mutateAsync: registerNewRestaurant } = useMutation({
+    mutationFn: registerRestaurant,
+  })
 
   async function handleSignUp(data: SignUpForm) {
     try {
-      console.log(data)
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      await registerNewRestaurant({
+        email: data.email,
+        managerName: data.managerName,
+        phone: data.phone,
+        restaurantName: data.restaurantName,
+      })
 
       toast.success('Restaurante cadastrado com sucesso', {
         action: {
           label: 'Login',
-          onClick: () => navigate('/sign-in'),
+          onClick: () => navigate(`/sign-in?email=${data.email}`),
         },
       })
     } catch (error) {
@@ -67,9 +77,6 @@ export function SignUp() {
                 type="text"
                 {...register('restaurantName')}
               />
-              {errors.restaurantName && (
-                <span>{errors.restaurantName.message}</span>
-              )}
             </div>
 
             <div className="space-y-2">
@@ -79,19 +86,16 @@ export function SignUp() {
                 type="text"
                 {...register('managerName')}
               />
-              {errors.managerName && <span>{errors.managerName.message}</span>}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="email">Seu e-mail</Label>
               <Input id="email" type="email" {...register('email')} />
-              {errors.email && <span>{errors.email.message}</span>}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="phone">Seu celular</Label>
               <Input id="phone" type="tel" {...register('phone')} />
-              {errors.phone && <span>{errors.phone.message}</span>}
             </div>
 
             <Button disabled={isSubmitting} type="submit" className="w-full">
