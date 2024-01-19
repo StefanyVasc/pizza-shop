@@ -27,6 +27,8 @@ export function AccountMenu() {
     useQuery({
       queryKey: ['managed-restaurant'],
       queryFn: getManagedRestaurant,
+      // isso faz com que não seja feita nova requisição
+      staleTime: Infinity,
     })
 
   return (
