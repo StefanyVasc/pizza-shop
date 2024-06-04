@@ -3,7 +3,7 @@ import { http, HttpResponse } from 'msw'
 import {
   GetOrderDetailsParams,
   GetOrderDetailsResponse,
-} from '../get-order-details'
+} from '@/api/get-order-details'
 
 export const getOrderDetailsMock = http.get<
   GetOrderDetailsParams,

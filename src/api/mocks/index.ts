@@ -2,19 +2,25 @@ import { setupWorker } from 'msw/browser'
 
 import { env } from '@/env'
 
-import { getDailyRevenueInPeriodMock } from './get-daily-revenue-in-period-mock'
-import { getDayOrdersAmountMock } from './get-day-orders-amount-mock'
-import { getManagedRestaurantMock } from './get-managed-restaurant-mock'
-import { getMonthCanceledOrdersAmountMock } from './get-month-canceled-orders-amount-mock'
-import { getMonthOrdersAmountMock } from './get-month-orders-amount-mock'
-import { getMonthRevenueMock } from './get-month-revenue-mock'
-import { getOrderDetailsMock } from './get-orders-details-mock'
-import { getOrdersMock } from './get-orders-mock'
-import { getPopularProductsMock } from './get-popular-products-mock'
-import { getProfileMock } from './get-profile-mock'
-import { registerRestaurantMock } from './register-restaurant-mock'
-import { signInMock } from './sign-in-mock'
-import { updateProfileMock } from './update-profile-mock'
+import {
+  approveOrderMock,
+  cancelOrderMock,
+  deliverOrderMock,
+  dispatchOrderMock,
+} from './actions'
+import {
+  getDailyRevenueInPeriodMock,
+  getDayOrdersAmountMock,
+  getManagedRestaurantMock,
+  getMonthCanceledOrdersAmountMock,
+  getMonthOrdersAmountMock,
+  getMonthRevenueMock,
+  getPopularProductsMock,
+} from './dashboard'
+import { getOrderDetailsMock, getOrdersMock } from './orders'
+import { getProfileMock, updateProfileMock } from './profile'
+import { registerRestaurantMock } from './restaurant'
+import { signInMock } from './sign-in'
 
 export const worker = setupWorker(
   signInMock,
@@ -30,6 +36,10 @@ export const worker = setupWorker(
   updateProfileMock,
   getOrdersMock,
   getOrderDetailsMock,
+  cancelOrderMock,
+  approveOrderMock,
+  deliverOrderMock,
+  dispatchOrderMock,
 )
 
 export async function enableMSW() {

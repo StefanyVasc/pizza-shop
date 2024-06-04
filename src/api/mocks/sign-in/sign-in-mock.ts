@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw'
 
-import { SignInBody } from '../sign-in'
+import { SignInBody } from '@/api/sign-in'
 
 // <never> -> nunca terá parametros para essa rota
 export const signInMock = http.post<never, SignInBody>(
